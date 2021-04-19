@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess The Number Game</title>
+    <link rel="icon" type="img" href="img/fav.jpg">
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        text-align: center;
+        color: wheat;
+    }
+
+    body {
+        background-image: url("img/exoplanet.jpg");
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-color: hsla(150, 70%, 20%, 0.5);
+    }
+
+
+
+    .main-container {
+        text-align: center;
+        height: 100vh;
+        width: 100vw;
+        display: grid;
+        justify-items: center;
+        align-items: center;
+    }
+
+
+
+    #gametitle {
+        text-transform: uppercase;
+        mix-blend-mode: luminosity;
+        font-weight: 900;
+
+    }
+
+
+    #inputfield {
+        margin: 10px;
+    }
+
+    #guessinput {
+        font-size: 15px;
+        color: blue;
+        padding: 2px;
+        text-align: left;
+        height: 40px;
+    }
+
+    #submit {
+        padding: 1px;
+        color: blanchedalmond;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        background-color: slategrey;
+        text-transform: uppercase;
+        font-weight: 900;
+        height: 40px;
+        width: 100px;
+
+    }
+
+    #restart {
+        text-transform: uppercase;
+        font-weight: 900;
+        color: red;
+        visibility: hidden;
+        padding: 4px;
+
+
+    }
+
+    #instruction {
+        height: 40px;
+        width: auto;
+        font-size: 16px;
+        background-color: wheat;
+        text-transform: capitalize;
+        color: blanchedalmond;
+        background-color: #232323;
+        padding: 5px;
+        outline: none;
+        margin: auto;
+        border-radius: 5px;
+    }
+
+    .inst-seg {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .inst-seg > p {
+        display: none;
+        margin: 10px;
+        padding: 10px;
+        color: thistle;
+        background-color: rgba(180, 180, 180, 0.2);
+        text-align: justify;
+        text-transform: capitalize;
+
+    }
+
+    .reset-butt{
+        margin-bottom: 20px;
+    }
+
+
+
+
+
+    .resultparas {
+        margin: 10px;
+    }
+
+    #guesses {
+        margin: 10px;
+    }
+
+    #recordguess {
+        font-size: 15px;
+    }
+
+
+    #statusview {
+        margin: 10px;
+    }
+
+    .footer-sec {
+        display: flex;
+        flex-direction: row;
+        background-color: teal;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        padding: 5px;
+    }
+
+
+    .right-text {
+        width: 40%;
+        font-size: 13px;
+        font-family: Arial, Helvetica, sans-serif;
+        text-transform: capitalize;
+        border-right-style: solid;
+        border-right-width: 4px;
+        border-right-color: wheat;
+
+
+    }
+
+    .credit-text {
+        width: 60%;
+        font-size: 13px;
+        font-family: Arial, Helvetica, sans-serif;
+        text-transform: capitalize;
+
+
+    }
+
+    @media screen and (min-width: 750px) {
+
+
+        .main-container {
+            width: 50%;
+            margin: 0 auto;
+            display: grid;
+            justify-items: center;
+            align-items: center;
+        }
+    }
+
+    /* @media only screen and (min-width:px){
+        .body{
+            width: 500px;
+            margin: auto;
+        }
+        .body-cont{
+            width: 40%;
+            margin: 0 auto;
+            
+        }
+        .main-container {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-items: center;
+            align-items: center;
+
+        }
+
+        .main-container > .inst-seg{
+            width: 20%;
+        }
+    } */
+</style>
+
+<body>
+    <main class="body-cont">
+        <div class="main-container">
+            <h2 id="gametitle">guess the number game</h2>
+            <div class="inst-seg">
+                <button id="instruction">game guide</button>
+                <p id="inst-text"></p>
+
+            </div>
+
+
+            <label for="input" id="inputfield">
+                <input type="text" placeholder="Tell a Number" name="number" id="guessinput">
+                <button name="submit" id="submit">submit</button>
+
+            </label>
+            <div class="resultparas">
+                <p id="guesses"></p>
+                <P id="recordguess"></P>
+                <p id="statusview"></p>
+                <p id="leveldetails"></p>
+            </div>
+
+            <button id="restart">play again</button>
+
+        </div>
+
+
+    </main>
+
+    <footer class="footer-sec">
+        <div class="right-text">
+            <h3>&copy;lilphemy 2020 </h3>
+        </div>
+        <div class="credit-text">
+            <h3>web-development project</h3>
+        </div>
+    </footer>
+
+    <script>
+        "use strict";
+        let guideButton = document.querySelector("#instruction");
+        let guideField = document.querySelector(".main-container p");
+        let playInst = "the computer generates a random Number between 1 and 100 both inclusive, you are meant to guess this number to win the game within a round of 10 turns. failure to get the number within the given turns, you loose the game. inputed values are recorded and the computer gives you a clue to your status.";
+
+        guideButton.addEventListener("click", () => {
+            guideField.innerText = playInst;
+            if (guideField.style.display === "block") {
+                guideField.style.display = "none";
+            } else { guideField.style.display = "block"; }
+
+        });
+
+
+
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+
+        const guesses = document.querySelector("#guesses");
+        const lastResult = document.querySelector("#recordguess");
+        const lowOrHigh = document.querySelector("#statusview");
+
+        const guessSubmit = document.querySelector("#submit");
+        const guessField = document.querySelector("#guessinput");
+        const trialDetails = document.querySelector("#leveldetails")
+
+        let guessCount = 1;
+        let resetButton = document.querySelector("#restart");
+        guessField.focus();
+        resetButton.classList.add("reset-butt");
+
+
+
+
+        function checkGuess() {
+            let userGuess = Number(guessField.value);
+            let count = 10 - guessCount;
+            if (guessCount === 1) {
+                guesses.textContent = "Previous guess: ";
+                trialDetails.textContent = "you have " + count + " chance(s) left";
+            } else if (guessCount > 1) {
+                trialDetails.textContent = "you have " + count + " chance(s) left";
+            }
+
+            guesses.textContent += userGuess + " ";
+
+            if (userGuess === randomNumber) {
+                lastResult.textContent = " congratulations! you got it right";
+                lastResult.style.backgroundColor = "green";
+                lowOrHigh.textContent = "";
+                guessSubmit.style.backgroundColor = "black";
+                trialDetails.innerText = "chances optimized!";
+                setGameOver();
+            } else if (guessCount === 10) {
+                lastResult.textContent = "!!! GAMEOVER!!!";
+                trialDetails.textContent = "chances exhausted!";
+                setGameOver();
+            } else {
+                lastResult.textContent = "Wrong!";
+                lastResult.style.backgroundColor = "red";
+                if (userGuess < randomNumber) {
+                    lowOrHigh.innerText = "Last Guess was too Low!";
+                } else if (userGuess > randomNumber) {
+                    lowOrHigh.innerText = "Last Guess was too high!";
+
+                }
+            }
+
+            if (isNaN(userGuess) === true || (userGuess === 0 || userGuess === null)) {
+                guesses.style.display = "none";
+                lastResult.style.display = "none";
+                lowOrHigh.style.display = "none";
+                trialDetails.innerText = "SYNTAX ERROR!";
+                trialDetails.style.backgroundColor = "red";
+                setGameOver();
+            }else{
+                guesses.style.display = "block";
+                lastResult.style.display = "block";
+                lowOrHigh.style.display = "block";
+                trialDetails.style.backgroundColor = "trans56parent";
+            }
+            guessCount++;
+            guessField.value = "";
+            guessField.focus();
+
+
+
+        }
+
+
+        guessSubmit.addEventListener("click", checkGuess);
+
+
+        function setGameOver() {
+            guessField.disabled = true;
+            guessSubmit.disabled = true;
+            resetButton.style.visibility = "visible";
+            // resetButton = document.createElement("button");
+            // resetButton.textContent = " start new game";
+            // document.body.append(resetButton);
+            resetButton.addEventListener("click", resetGame);
+
+        }
+
+        function resetGame() {
+            guessCount = 1;
+            const resetParas = document.querySelectorAll(".resultparas p");
+            for (let i = 0; i < resetParas.length; i++) {
+                resetParas[i].textContent = "";
+            }
+            resetButton.style.visibility = "hidden";
+            //resetButton.parentNode.removeChild(resetButton);
+
+            guessField.disabled = false;
+            guessSubmit.disabled = false;
+            guessField.value = "";
+            guessField.focus();
+
+            lastResult.style.backgroundColor = "white";
+            randomNumber = Math.floor(Math.random() * 100) + 1;
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>
